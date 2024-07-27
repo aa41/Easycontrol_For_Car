@@ -98,7 +98,7 @@
     android:layout_marginEnd="10dp"
     android:layout_marginBottom="45dp"
     android:background="@drawable/background_cron"
-    android:columnCount="4"
+    android:columnCount="5"
     android:elevation="6dp"
     android:padding="8dp">
 
@@ -128,6 +128,17 @@
       android:focusable="false"
       android:src="@drawable/compress"
       android:tint="@color/onCardBackground" />
+
+      <ImageView
+          android:id="@+id/button_boxfit"
+          android:layout_width="38dp"
+          android:layout_height="38dp"
+          android:layout_margin="4dp"
+          android:focusable="false"
+          android:src="@android:drawable/ic_menu_crop"
+          android:tint="@color/onCardBackground" />
+
+
 
     <ImageView
       android:id="@+id/button_close"

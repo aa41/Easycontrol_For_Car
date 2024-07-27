@@ -6,9 +6,11 @@ import android.media.MediaCodec;
 import android.media.MediaCodecInfo;
 import android.media.MediaFormat;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.system.ErrnoException;
 import android.view.Surface;
+
 import top.eiyooooo.easycontrol.server.Scrcpy;
 import top.eiyooooo.easycontrol.server.entity.Device;
 import top.eiyooooo.easycontrol.server.entity.Options;
@@ -27,6 +29,8 @@ public final class VideoEncode {
     private static MediaFormat encoderFormat;
     public static boolean isHasChangeConfig = false;
     private static boolean useH265;
+
+    private static boolean lowerMode = false;
 
     private static IBinder display;
     private static final HashMap<Integer, VirtualDisplay> virtualDisplays = new HashMap<>();
@@ -49,6 +53,30 @@ public final class VideoEncode {
         // 创建Codec
         createEncoderFormat();
         startEncode();
+    }
+
+    public static void lowerBitrate() {
+        if (lowerMode || encoder == null) return;
+        Bundle bundle = new Bundle();
+        bundle.putInt(MediaFormat.KEY_BIT_RATE, Options.minVideoBit);
+        encoderFormat.setInteger(MediaFormat.KEY_FRAME_RATE, Options.minFps);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+            encoderFormat.setInteger(MediaFormat.KEY_INTRA_REFRESH_PERIOD, Options.minFps * 3);
+        encoderFormat.setFloat("max-fps-to-encoder", Options.minFps);
+        encoder.setParameters(bundle);
+        lowerMode = true;
+    }
+
+    public static void restoreHigherBitrate() {
+        if (!lowerMode || encoder == null) return;
+        Bundle bundle = new Bundle();
+        bundle.putInt(MediaFormat.KEY_BIT_RATE, Options.maxVideoBit);
+        encoderFormat.setInteger(MediaFormat.KEY_FRAME_RATE, Options.maxFps);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+            encoderFormat.setInteger(MediaFormat.KEY_INTRA_REFRESH_PERIOD, Options.maxFps * 3);
+        encoderFormat.setFloat("max-fps-to-encoder", Options.maxFps);
+        encoder.setParameters(bundle);
+        lowerMode = false;
     }
 
     private static void createEncoderFormat() throws IOException {

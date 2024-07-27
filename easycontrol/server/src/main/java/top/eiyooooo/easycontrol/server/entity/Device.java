@@ -8,6 +8,7 @@ import android.os.IBinder;
 import android.os.SystemClock;
 import android.util.Pair;
 import android.view.*;
+
 import top.eiyooooo.easycontrol.server.Channel;
 import top.eiyooooo.easycontrol.server.Scrcpy;
 import top.eiyooooo.easycontrol.server.helper.ControlPacket;
@@ -87,6 +88,7 @@ public final class Device {
         if (mode == 1) needReset = true;
         VideoEncode.isHasChangeConfig = true;
     }
+
 
     private static void getVideoSize() {
         if (Options.maxSize == 0) {
@@ -181,6 +183,11 @@ public final class Device {
             if (pointerCount > 1)
                 action = MotionEvent.ACTION_POINTER_DOWN | (pointer.id << MotionEvent.ACTION_POINTER_INDEX_SHIFT);
         }
+        if (action == MotionEvent.ACTION_MOVE || action == MotionEvent.ACTION_HOVER_MOVE) {
+            VideoEncode.lowerBitrate();
+        } else {
+            VideoEncode.restoreHigherBitrate();
+        }
         MotionEvent event = MotionEvent.obtain(pointer.downTime, pointer.downTime + offsetTime, action, pointerCount, pointersState.pointerProperties, pointersState.pointerCoords, 0, 0, 1f, 1f, 0, 0, InputDevice.SOURCE_TOUCHSCREEN, 0);
         if (Options.mirrorMode == 1 && display2virtualDisplay.containsKey(displayId))
             injectEvent(event, display2virtualDisplay.get(displayId));
@@ -235,7 +242,8 @@ public final class Device {
 
     public static void rotateDevice(int rotation) {
         boolean accelerometerRotation = !WindowManager.isRotationFrozen(displayId);
-        if (rotation == -1) rotation = (getCurrentRotation(displayId) & 1) ^ 1; // 0->1, 1->0, 2->1, 3->0
+        if (rotation == -1)
+            rotation = (getCurrentRotation(displayId) & 1) ^ 1; // 0->1, 1->0, 2->1, 3->0
         WindowManager.freezeRotation(displayId, rotation);
         if (accelerometerRotation) WindowManager.thawRotation(displayId);
     }
@@ -291,7 +299,8 @@ public final class Device {
     public static boolean isEncoderSupport(String mimeName) {
         MediaCodecList mediaCodecList = new MediaCodecList(MediaCodecList.REGULAR_CODECS);
         for (MediaCodecInfo mediaCodecInfo : mediaCodecList.getCodecInfos())
-            if (mediaCodecInfo.isEncoder() && mediaCodecInfo.getName().contains(mimeName)) return true;
+            if (mediaCodecInfo.isEncoder() && mediaCodecInfo.getName().contains(mimeName))
+                return true;
         return false;
     }
 }

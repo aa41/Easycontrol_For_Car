@@ -8,7 +8,15 @@ public final class Options {
     public static int maxVideoBit = 4000000;
     public static int maxFps = 60;
     public static int displayId = 0;
+
+
+    public static int minSize = 800;
+
+    public static int minVideoBit = 1000000;
+    public static int minFps = 15;
+
     public static boolean keepAwake = true;
+
     public static boolean TurnOnScreenIfStart = true;
     public static boolean TurnOffScreenIfStart = false;
     public static boolean TurnOffScreenIfStop = false;
