@@ -183,7 +183,7 @@ public final class Device {
             if (pointerCount > 1)
                 action = MotionEvent.ACTION_POINTER_DOWN | (pointer.id << MotionEvent.ACTION_POINTER_INDEX_SHIFT);
         }
-        if (action == MotionEvent.ACTION_MOVE || action == MotionEvent.ACTION_HOVER_MOVE) {
+        if (action == MotionEvent.ACTION_MOVE) {
             VideoEncode.lowerBitrate();
         } else {
             VideoEncode.restoreHigherBitrate();
